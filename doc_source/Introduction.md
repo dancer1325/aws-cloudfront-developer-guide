@@ -1,16 +1,28 @@
 # What is Amazon CloudFront?<a name="Introduction"></a>
 
-Amazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, such as \.html, \.css, \.js, and image files, to your users\. CloudFront delivers your content through a worldwide network of data centers called edge locations\. When a user requests content that you're serving with CloudFront, the request is routed to the edge location that provides the lowest latency \(time delay\), so that content is delivered with the best possible performance\.
-+ If the content is already in the edge location with the lowest latency, CloudFront delivers it immediately\.
-+ If the content is not in that edge location, CloudFront retrieves it from an origin that you've defined—such as an Amazon S3 bucket, a MediaPackage channel, or an HTTP server \(for example, a web server\) that you have identified as the source for the definitive version of your content\.
-
-As an example, suppose that you're serving an image from a traditional web server, not from CloudFront\. For example, you might serve an image, sunsetphoto\.png, using the URL `https://example.com/sunsetphoto.png`\.
-
-Your users can easily navigate to this URL and see the image\. But they probably don't know that their request is routed from one network to another—through the complex collection of interconnected networks that comprise the internet—until the image is found\.
-
-CloudFront speeds up the distribution of your content by routing each user request through the AWS backbone network to the edge location that can best serve your content\. Typically, this is a CloudFront edge server that provides the fastest delivery to the viewer\. Using the AWS network dramatically reduces the number of networks that your users' requests must pass through, which improves performance\. Users get lower latency—the time it takes to load the first byte of the file—and higher data transfer rates\.
-
-You also get increased reliability and availability because copies of your files \(also known as *objects\)* are now held \(or cached\) in multiple edge locations around the world\. 
+* := web service / 👀speeds up distribution -- through edge locations -- of your web content 👀
+  * type of content
+    * static 
+      * _Example:_ image files
+    * dynamic
+      * _Example:_ \.html, \.css, \.js
+  * if the content is NOT | edge location -> CloudFront -- retrieves it from an -- origin / you've defined (_Example:_ Amazon S3 bucket, a MediaPackage channel, or HTTP server)
+    * _Example:_ a web server / -- identified as the -- source for the definitive version of your content
+  * vs serve content | traditional web server directly (== NOT use CloudFront)
+    * much slower
+      * Reason: 🧠 request is routed -- from -- one network -- to -> another—through the complex collection of interconnected networks / == internet 🧠
+* edge location
+  * use cases
+    * content / -- is served via -- CloudFront
+  * allows
+    * routing requests to the lowest latency \( == time delay\)
+      * -> content -- is delivered with the -- best possible performance
+      * == use AWS network -> reduce the # of networks / your users' requests -- must -- pass through 
+      * -- from -- FIRST request
+    * copying your files | multiple edge locations
+      * -> better
+        * reliability &
+        * availability 
 
 **Topics**
 + [How you set up CloudFront to deliver content](#HowCloudFrontWorksOverview)
@@ -22,17 +34,30 @@ You also get increased reliability and availability because copies of your files
 
 ## How you set up CloudFront to deliver content<a name="HowCloudFrontWorksOverview"></a>
 
-You create a CloudFront distribution to tell CloudFront where you want content to be delivered from, and the details about how to track and manage content delivery\. Then CloudFront uses computers—edge servers—that are close to your viewers to deliver that content quickly when someone wants to see it or use it\.
+* create a CloudFront distribution
+  * == tell CloudFront 
+    * where content is delivered from
+    * how to
+      * track & manage content delivery
 
 ![\[How CloudFront works\]](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/images/how-you-configure-cf.png)<a name="HowCloudFrontWorksConfiguration"></a>
 
-**How you configure CloudFront to deliver your content**
-
-1. You specify *origin servers*, like an Amazon S3 bucket or your own HTTP server, from which CloudFront gets your files which will then be distributed from CloudFront edge locations all over the world\. 
-
-   An origin server stores the original, definitive version of your objects\. If you're serving content over HTTP, your origin server is either an Amazon S3 bucket or an HTTP server, such as a web server\. Your HTTP server can run on an Amazon Elastic Compute Cloud \(Amazon EC2\) instance or on a server that you manage; these servers are also known as *custom origins\.*
-
-1. You upload your files to your origin servers\. Your files, also known as *objects*, typically include web pages, images, and media files, but can be anything that can be served over HTTP\.
+**How to configure CloudFront -- to deliver -- your content**
+1. specify *origin servers* 
+   1. _Example:_ Amazon S3 bucket, your own HTTP server
+      1. if you're serving content | HTTP -> origin server can be an
+         1. Amazon S3 bucket or
+         2. HTTP server 
+            1. _Example:_ web server
+            2. types
+               1. run | Amazon EC2 instances
+               2. *custom origins*
+                  1. == server / you manage
+   2. uses
+      1. CloudFront gets your files from them
+   3. allows
+      1. storing the original, definitive version of your objects
+1. TODO: You upload your files to your origin servers\. Your files, also known as *objects*, typically include web pages, images, and media files, but can be anything that can be served over HTTP\.
 
    If you're using an Amazon S3 bucket as an origin server, you can make the objects in your bucket publicly readable, so that anyone who knows the CloudFront URLs for your objects can access them\. You also have the option of keeping objects private and controlling who accesses them\. See [Serving private content with signed URLs and signed cookies](PrivateContent.md)\. 
 
