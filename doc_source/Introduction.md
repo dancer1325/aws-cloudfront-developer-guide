@@ -12,6 +12,8 @@
     * much slower
       * Reason: 🧠 request is routed -- from -- one network -- to -> another—through the complex collection of interconnected networks / == internet 🧠
 * edge location
+  * named also as *points of presence* \(POPs\)
+    * == collections of servers / geographically\-dispersed | data centers
   * use cases
     * content / -- is served via -- CloudFront
   * allows
@@ -57,18 +59,31 @@
       1. CloudFront gets your files from them
    3. allows
       1. storing the original, definitive version of your objects
-1. TODO: You upload your files to your origin servers\. Your files, also known as *objects*, typically include web pages, images, and media files, but can be anything that can be served over HTTP\.
-
-   If you're using an Amazon S3 bucket as an origin server, you can make the objects in your bucket publicly readable, so that anyone who knows the CloudFront URLs for your objects can access them\. You also have the option of keeping objects private and controlling who accesses them\. See [Serving private content with signed URLs and signed cookies](PrivateContent.md)\. 
-
-1. You create a CloudFront *distribution*, which tells CloudFront which origin servers to get your files from when users request the files through your web site or application\. At the same time, you specify details such as whether you want CloudFront to log all requests and whether you want the distribution to be enabled as soon as it's created\.
-
-1. CloudFront assigns a domain name to your new distribution that you can see in the CloudFront console, or that is returned in the response to a programmatic request, for example, an API request\. If you like, you can add an alternate domain name to use instead\.
-
-1. CloudFront sends your distribution's configuration \(but not your content\) to all of its *edge locations* or *points of presence* \(POPs\)— collections of servers in geographically\-dispersed data centers where CloudFront caches copies of your files\.
-
-As you develop your website or application, you use the domain name that CloudFront provides for your URLs\. For example, if CloudFront returns `d111111abcdef8.cloudfront.net` as the domain name for your distribution, the URL for logo\.jpg in your Amazon S3 bucket \(or in the root directory on an HTTP server\) is `https://d111111abcdef8.cloudfront.net/logo.jpg`\.
-
-Or you can set up CloudFront to use your own domain name with your distribution\. In that case, the URL might be `https://www.example.com/logo.jpg`\.
-
-Optionally, you can configure your origin server to add headers to the files, to indicate how long you want the files to stay in the cache in CloudFront edge locations\. By default, each file stays in an edge location for 24 hours before it expires\. The minimum expiration time is 0 seconds; there isn't a maximum expiration time\. For more information, see [Managing how long content stays in the cache \(expiration\)](Expiration.md)\.
+      2. adding headers / indicate how long to cache files | CloudFront edge locations
+         1. by default, 24 hours
+         2. [0 seconds, noMaximum)
+         3. [Managing how long content stays in the cache \(expiration\)](Expiration.md)
+2. upload your files | your origin servers
+   1. those files
+      1. -- named as -- *objects*
+      2. == ANYTHING / -- can be served over -- HTTP
+         1. web pages,
+         2. images,
+         3. media files,
+   2. if you're using an Amazon S3 bucket -- as an -- origin server -> you can make the objects | your bucket /
+      1. publicly readable
+         1. -> ANYONE / knows the CloudFront URLs for your objects -> can access them
+      2. private
+         1. -> control who accesses them
+         2. check [Serving private content with signed URLs and signed cookies](PrivateContent.md)
+3. create the CloudFront *distribution* / you can also specify if you want to
+   1. log all requests
+   2. enable the distribution / as soon as it's created
+4. CloudFront -- assigns a -- domain name to your new distribution
+   1. check in the CloudFront console,
+   2. it can be customized
+   3. uses
+      1. urls for your content
+         1. _Example1:_ if CloudFront domain name for your distribution is `d111111abcdef8.cloudfront.net` & the content is logo\.jpg -> accessed via `https://d111111abcdef8.cloudfront.net/logo.jpg`\
+         2. _Example2:_ if CloudFront domain name for your distribution is `d111111abcdef8.cloudfront.net` & the content is logo\.jpg & your own domain name is www.example.com -> accessed via `https://www.example.com/logo.jpg`\
+5. CloudFront -- sends your distribution's configuration (NOT your content) to -- ALL of its *edge locations* 
