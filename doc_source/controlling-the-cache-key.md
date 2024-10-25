@@ -1,12 +1,29 @@
 # Controlling the cache key<a name="controlling-the-cache-key"></a>
 
-With Amazon CloudFront, you can control the *cache key* for objects that are cached at CloudFront edge locations\. The cache key is the unique identifier for every object in the cache, and it determines whether a viewer request results in a *cache hit*\. A cache hit occurs when a viewer request generates the same cache key as a prior request, and the object for that cache key is in the edge location's cache and valid\. When there's a cache hit, the object is served to the viewer from a CloudFront edge location, which has the following benefits:
-+ Reduced load on your origin server
-+ Reduced latency for the viewer
-
-You can get better performance from your website or application when you have a higher *cache hit ratio* \(a higher proportion of viewer requests result in a cache hit\)\. One way to improve your cache hit ratio is to include only the minimum necessary values in the cache key\. For more information, see [Understanding the cache key](understanding-the-cache-key.md)\.
-
-To control the cache key, you use a CloudFront *cache policy*\. You attach a cache policy to one or more cache behaviors in a CloudFront distribution\.
+* *cache key*
+  * use cases
+    * objects / are cached | CloudFront edge locations
+  * 👀:= unique identifier / EVERY object | cache 👀
+  * -- determines if -- a viewer's HTTP request -- results in a -- *cache hit*
+  * ways to control it
+    * use a CloudFront *cache policy*  
+      * == attach a cache policy | >=1 cache behaviors | CloudFront distribution
+* *cache hit*
+  * requirements to happen
+    * viewer request -- generates a -- cache key / == prior request
+    * object / -- associated to -- that cache key is
+      * | edge location's cache
+      * valid
+  * if a cache hit happens -> object -- is served, to the viewer, from a -- CloudFront edge location
+    * 👀-> benefits 👀
+      * Reduced load | your origin server
+      * Reduced latency -- for the -- viewer
+* *cache hit ratio*
+  * == ratio of viewer requests / -- result in a -- cache hit
+  * as higher cache hit ratio -> better performance from your website or application
+  * 👀ways to increase 👀
+    * include ONLY the minimum necessary values | cache key
+      * check [Understanding the cache key](understanding-the-cache-key.md)
 
 **Topics**
 + [Creating cache policies](#cache-key-create-cache-policy)
@@ -16,6 +33,7 @@ To control the cache key, you use a CloudFront *cache policy*\. You attach a cac
 
 ## Creating cache policies<a name="cache-key-create-cache-policy"></a>
 
+* TODO:
 You can use a cache policy to improve your cache hit ratio by controlling the values \(URL query strings, HTTP headers, and cookies\) that are included in the cache key\. You can create a cache policy in the CloudFront console, with the AWS Command Line Interface \(AWS CLI\), or with the CloudFront API\.
 
 After you create a cache policy, you attach it to one or more cache behaviors in a CloudFront distribution\.
