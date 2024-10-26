@@ -10,6 +10,10 @@
           * query strings
         * TTL settings -- for -- objects | CloudFront cache
       * enabling CloudFront -- to -- request & cache compressed objects
+    * ways to create it
+      * CloudFront console
+      * AWS CLI
+      * CloudFront API
 
   * CloudFront *origin request policy* 
     * allows
