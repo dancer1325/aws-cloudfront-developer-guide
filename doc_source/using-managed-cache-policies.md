@@ -13,15 +13,15 @@
 
 ## Attaching a managed cache policy<a name="attaching-managed-cache-policies"></a>
 
-To use a managed cache policy, you attach it to a cache behavior in your distribution\. The process is the same as when you create a cache policy, but instead of creating a new one, you just attach one of the managed cache policies\. You attach the policy either by name \(with the console\) or by ID \(with the AWS CLI or SDKs\)\. The names and IDs are listed in the following section\.
-
-For more information, see [Creating cache policies](controlling-the-cache-key.md#cache-key-create-cache-policy)\.
+* 's process == process to create a NEW cache policy
+  * see [Creating cache policies](controlling-the-cache-key.md#cache-key-create-cache-policy) 
+* ways to attach the policy
+  * by name (-- via the -- console\)
+  * by ID ( -- via the -- AWS CLI or SDKs\) 
+  The names and IDs are listed in the following section\.
 
 ## Available managed cache policies<a name="managed-cache-policies-list"></a>
 
-The following topics describe the managed cache policies that you can use\.
-
-**Topics**
 + [Amplify](#managed-cache-policy-amplify)
 + [CachingDisabled](#managed-cache-policy-caching-disabled)
 + [CachingOptimized](#managed-cache-caching-optimized)
@@ -30,49 +30,51 @@ The following topics describe the managed cache policies that you can use\.
 
 ### Amplify<a name="managed-cache-policy-amplify"></a>
 
-[View this policy in the CloudFront console](https://console.aws.amazon.com/cloudfront/v3/home#/policies/cache/2e54312d-136d-493c-8eb9-b001f22f67d2)
+* [view this policy | AWS CloudFront console](https://console.aws.amazon.com/cloudfront/v3/home#/policies/cache/2e54312d-136d-493c-8eb9-b001f22f67d2)
+* uses
+  * | origin / it's an [AWS Amplify](https://aws.amazon.com/amplify/) web app
+* if you use AWS CloudFormation or AWS CLI or CloudFront API -> policyId is
 
-This policy is designed for use with an origin that is an [AWS Amplify](https://aws.amazon.com/amplify/) web app\.
-
-When using AWS CloudFormation, the AWS CLI, or the CloudFront API, the ID for this policy is:
-
-`2e54312d-136d-493c-8eb9-b001f22f67d2`
-
-This policy has the following settings:
-+ **Minimum TTL:** 2 seconds
-+ **Maximum TTL:** 600 seconds \(10 minutes\)
-+ **Default TTL:** 2 seconds
-+ **Headers included in cache key:**
-  + `Authorization`
-  + `CloudFront-Viewer-Country`
-  + `Host`
-
-  The normalized `Accept-Encoding` header is also included because the cache compressed objects setting is enabled\. For more information, see [Compression support](controlling-the-cache-key.md#cache-policy-compressed-objects)\.
-+ **Cookies included in cache key:** All cookies are included\.
-+ **Query strings included in cache key:** All query strings are included\.
-+ **Cache compressed objects setting:** Enabled\. For more information, see [Compression support](controlling-the-cache-key.md#cache-policy-compressed-objects)\.
+    `2e54312d-136d-493c-8eb9-b001f22f67d2`
+* settings
+  + **Minimum TTL:** 2 seconds
+  + **Maximum TTL:** 600 seconds \(10 minutes\)
+  + **Default TTL:** 2 seconds
+  + **Headers / included | cache key:**
+    + `Authorization`
+    + `CloudFront-Viewer-Country`
+    + `Host`
+    + normalized `Accept-Encoding`
+      + Reason: 🧠included because the [cache compressed objects](controlling-the-cache-key.md#cache-policy-compressed-objects) setting is enabled 🧠
+  + **Cookies / included | cache key:** ALL 
+  + **Query strings / included | cache key:** ALL
+  + **Cache compressed objects setting:**
+    + Enabled
+    + see [Compression support](controlling-the-cache-key.md#cache-policy-compressed-objects)
 
 ### CachingDisabled<a name="managed-cache-policy-caching-disabled"></a>
 
-[View this policy in the CloudFront console](https://console.aws.amazon.com/cloudfront/v3/home#/policies/cache/4135ea2d-6df8-44a3-9df3-4b5a84be39ad)
+* [View this policy | CloudFront console](https://console.aws.amazon.com/cloudfront/v3/home#/policies/cache/4135ea2d-6df8-44a3-9df3-4b5a84be39ad)
+* allows
+  * disables caching
+* use cases
+  * dynamic content
+  * requests / NOT cacheable
+* if you use AWS CloudFormation or AWS CLI or CloudFront API -> policyId is
 
-This policy disables caching\. This policy is useful for dynamic content and for requests that are not cacheable\.
-
-When using AWS CloudFormation, the AWS CLI, or the CloudFront API, the ID for this policy is:
-
-`4135ea2d-6df8-44a3-9df3-4b5a84be39ad`
-
-This policy has the following settings:
-+ **Minimum TTL:** 0 seconds
-+ **Maximum TTL:** 0 seconds
-+ **Default TTL:** 0 seconds
-+ **Headers included in the cache key:** None
-+ **Cookies included in the cache key:** None
-+ **Query strings included in the cache key:** None
-+ **Cache compressed objects setting:** Disabled
+    `4135ea2d-6df8-44a3-9df3-4b5a84be39ad`
+* settings:
+  + **Minimum TTL:** 0 seconds
+  + **Maximum TTL:** 0 seconds
+  + **Default TTL:** 0 seconds
+  + **Headers / included | cache key:** None
+  + **Cookies / included | cache key:** None
+  + **Query strings / included | cache key:** None
+  + **Cache compressed objects setting:** Disabled
 
 ### CachingOptimized<a name="managed-cache-caching-optimized"></a>
 
+* TODO:
 [View this policy in the CloudFront console](https://console.aws.amazon.com/cloudfront/v3/home#/policies/cache/658327ea-f89d-4fab-a63d-7e88639e58f6)
 
 This policy is designed to optimize cache efficiency by minimizing the values that CloudFront includes in the cache key\. CloudFront doesn't include any query strings or cookies in the cache key, and only includes the normalized `Accept-Encoding` header\. This enables CloudFront to separately cache objects in the Gzip and Brotli compressions formats when the origin returns them or when [CloudFront edge compression](ServingCompressedFiles.md) is enabled\.
