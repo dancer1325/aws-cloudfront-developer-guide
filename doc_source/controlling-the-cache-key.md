@@ -33,11 +33,6 @@
 
 ## Creating cache policies<a name="cache-key-create-cache-policy"></a>
 
-* TODO:
-You can use a cache policy to improve your cache hit ratio by controlling the values \(URL query strings, HTTP headers, and cookies\) that are included in the cache key\. You can create a cache policy in the CloudFront console, with the AWS Command Line Interface \(AWS CLI\), or with the CloudFront API\.
-
-After you create a cache policy, you attach it to one or more cache behaviors in a CloudFront distribution\.
-
 ------
 #### [ Console ]
 
@@ -86,66 +81,64 @@ After you create a cache policy, you can attach it to a cache behavior\.
 ------
 #### [ CLI ]
 
-To create a cache policy with the AWS Command Line Interface \(AWS CLI\), use the aws cloudfront create\-cache\-policy command\. You can use an input file to provide the command's input parameters, rather than specifying each individual parameter as command line input\.
+ create\-cache\-policy command\. You can use an input file to provide the command's input parameters, rather than specifying each individual parameter as command line input\.
 
-**To create a cache policy \(CLI with input file\)**
+1. **create a cache policy -- via -- input file** 
+   1. create a `cache-policy.yaml` / contains ALL input parameters -- for the -- `create-cache-policy` command
 
-1. Use the following command to create a file named `cache-policy.yaml` that contains all of the input parameters for the create\-cache\-policy command\.
+      ```
+      aws cloudfront create-cache-policy --generate-cli-skeleton yaml-input > cache-policy.yaml
+      ```
 
-   ```
-   aws cloudfront create-cache-policy --generate-cli-skeleton yaml-input > cache-policy.yaml
-   ```
+   2. edit `cache-policy.yaml` 
+      1. NOT remove the required fields
+      2. check [Understanding cache policies](#cache-key-understand-cache-policy)
 
-1. Open the file named `cache-policy.yaml` that you just created\. Edit the file to specify the cache policy settings that you want, then save the file\. You can remove optional fields from the file, but don't remove the required fields\.
+   3. create the cache policy -- via -- input parameters from the `cache-policy.yaml` file
 
-   For more information about the cache policy settings, see [Understanding cache policies](#cache-key-understand-cache-policy)\.
+      ```
+      aws cloudfront create-cache-policy --cli-input-yaml file://cache-policy.yaml
+      ```
 
-1. Use the following command to create the cache policy using input parameters from the `cache-policy.yaml` file\.
+      1. return the cache policy ID
 
-   ```
-   aws cloudfront create-cache-policy --cli-input-yaml file://cache-policy.yaml
-   ```
+2. **attach a cache policy | EXISTING distribution**
+   1. save the CloudFront distribution configuration / you want to update
 
-   Make note of the `Id` value in the command's output\. This is the cache policy ID, and you need it to attach the cache policy to a CloudFront distribution's cache behavior\.
+      ```
+      aws cloudfront get-distribution-config --id distributionID --output yaml > dist-config.yaml
+      ```
 
-**To attach a cache policy to an existing distribution \(CLI with input file\)**
+   2. edit `dist-config.yaml` / 👀goal: use a cache policy | SOME cache behavior 👀
+      + | cache behavior
+        + add a field named `CachePolicyId` / value = created previous step
+        + remove the `MinTTL`, `MaxTTL`, `DefaultTTL`, and `ForwardedValues` fields 
+          + Reason: 🧠 These settings are specified | cache policy -> NOT possible to include these fields & cache policy 🧠
+      + rename the `ETag` field -- to -- `IfMatch`
 
-1. Use the following command to save the distribution configuration for the CloudFront distribution that you want to update\. Replace *distribution\_ID* with the distribution's ID\.
+   3. use the cache policy | distribution
 
-   ```
-   aws cloudfront get-distribution-config --id distribution_ID --output yaml > dist-config.yaml
-   ```
+      ```
+      aws cloudfront update-distribution --id distributionID --cli-input-yaml file://dist-config.yaml
+      ```
 
-1. Open the file named `dist-config.yaml` that you just created\. Edit the file, making the following changes to each cache behavior that you are updating to use a cache policy\.
-   + In the cache behavior, add a field named `CachePolicyId`\. For the field's value, use the cache policy ID that you noted after creating the policy\.
-   + Remove the `MinTTL`, `MaxTTL`, `DefaultTTL`, and `ForwardedValues` fields from the cache behavior\. These settings are specified in the cache policy, so you can't include these fields and a cache policy in the same cache behavior\.
-   + Rename the `ETag` field to `IfMatch`, but don't change the field's value\.
+3. **attach a cache policy | NEW distribution**
+   1. create a `distribution.yaml` / contains ALL input parameters -- for the -- `create-distribution` command
 
-   Save the file when finished\.
+      ```
+      aws cloudfront create-distribution --generate-cli-skeleton yaml-input > distribution.yaml
+      ```
 
-1. Use the following command to update the distribution to use the cache policy\. Replace *distribution\_ID* with the distribution's ID\.
+   2. edit `distribution.yaml`
+      1. | default cache behavior, set `CachePolicyId` / value = created first step
+      2. specify other distribution settings / you want to adjust
+      3. check [more information about the distribution settings](distribution-web-values-specify.md)
 
-   ```
-   aws cloudfront update-distribution --id distribution_ID --cli-input-yaml file://dist-config.yaml
-   ```
+   3. Use the following command to create the distribution using input parameters from the `distribution.yaml` file\.
 
-**To attach a cache policy to a new distribution \(CLI with input file\)**
-
-1. Use the following command to create a file named `distribution.yaml` that contains all of the input parameters for the create\-distribution command\.
-
-   ```
-   aws cloudfront create-distribution --generate-cli-skeleton yaml-input > distribution.yaml
-   ```
-
-1. Open the file named `distribution.yaml` that you just created\. In the default cache behavior, in the `CachePolicyId` field, enter the cache policy ID that you noted after creating the policy\. Continue editing the file to specify the distribution settings that you want, then save the file when finished\.
-
-   For more information about the distribution settings, see [Values that you specify when you create or update a distribution](distribution-web-values-specify.md)\.
-
-1. Use the following command to create the distribution using input parameters from the `distribution.yaml` file\.
-
-   ```
-   aws cloudfront create-distribution --cli-input-yaml file://distribution.yaml
-   ```
+      ```
+      aws cloudfront create-distribution --cli-input-yaml file://distribution.yaml
+      ```
 
 ------
 #### [ API ]
@@ -162,54 +155,85 @@ For both of these API calls, provide the cache policy's ID in the `CachePolicyId
 
 ## Understanding cache policies<a name="cache-key-understand-cache-policy"></a>
 
-You can use a cache policy to improve your cache hit ratio by controlling the values \(URL query strings, HTTP headers, and cookies\) that are included in the cache key\. CloudFront provides some predefined cache policies, known as *managed policies*, for common use cases\. You can use these managed policies, or you can create your own cache policy that's specific to your needs\. For more information about the managed policies, see [Using the managed cache policies](using-managed-cache-policies.md)\.
-
-A cache policy contains the following settings, which are categorized into *policy information*, *time to live \(TTL\) settings*, and *cache key settings*\.
-
+* *managed policies*
+  * 👀 == built-in CloudFront cache policies 👀
+    * -- for -- common use cases 
+  * [Using the managed cache policies](using-managed-cache-policies.md)
+* 👀cache policy's setting categories 👀
+  * *policy information*
+  * *TTL settings*
+  * *cache key settings*
+---
 ### Policy information<a name="cache-key-understand-cache-policy-info"></a>
 
-**Name**  
-A name to identify the cache policy\. In the console, you use the name to attach the cache policy to a cache behavior\.
+* **Name**  
+  * allows
+    * identifying the cache policy
+  * uses
+    * attach the cache policy | cache behavior
 
-**Description**  
-A comment to describe the cache policy\. This is optional, but it can help you identify the purpose of the cache policy\.
+* **Description**  
+* == comment / describe the cache policy
+  * optional
+---
+### TTL settings<a name="cache-key-understand-cache-policy-ttl"></a>
 
-### Time to live \(TTL\) settings<a name="cache-key-understand-cache-policy-ttl"></a>
+* \+ HTTP headers' `Cache-Control` & `Expires` | origin response -> determine how long objects | CloudFront cache remain valid
+  * these HTTP headers are optional to exist
 
-The time to live \(TTL\) settings work together with the `Cache-Control` and `Expires` HTTP headers \(if they're in the origin response\) to determine how long objects in the CloudFront cache remain valid\.
+* **Minimum TTL**  
+  * := minimum amount of time (| seconds) / objects must stay | CloudFront cache -- before -- CloudFront checks if the object has been updated
+  * see [Managing how long content stays in the cache \(expiration\)](Expiration.md)
 
-**Minimum TTL**  
-The minimum amount of time, in seconds, that you want objects to stay in the CloudFront cache before CloudFront checks with the origin to see if the object has been updated\. For more information, see [Managing how long content stays in the cache \(expiration\)](Expiration.md)\.
+* **Maximum TTL**  
+  * := maximum amount of time (|seconds) / objects must stay | CloudFront cache -- before -- CloudFront checks if the object has been updated
+  * requirements
+    * origin must send `Cache-Control` or `Expires` headers + object
+  * see [Managing how long content stays in the cache \(expiration\)](Expiration.md)\
 
-**Maximum TTL**  
-The maximum amount of time, in seconds, that objects stay in the CloudFront cache before CloudFront checks with the origin to see if the object has been updated\. CloudFront uses this setting only when the origin sends `Cache-Control` or `Expires` headers with the object\. For more information, see [Managing how long content stays in the cache \(expiration\)](Expiration.md)\.
-
-**Default TTL**  
-The default amount of time, in seconds, that you want objects to stay in the CloudFront cache before CloudFront checks with the origin to see if the object has been updated\. CloudFront uses this setting's value as the object's TTL only when the origin does *not* send `Cache-Control` or `Expires` headers with the object\. For more information, see [Managing how long content stays in the cache \(expiration\)](Expiration.md)\.
-
+* **Default TTL**  
+  * == default amount of time (|seconds) /  objects must stay | CloudFront cache -- before -- CloudFront checks if the object has been updated
+  * requirements
+    * origin does NOT send `Cache-Control` or `Expires` headers + object
+  * see [Managing how long content stays in the cache \(expiration\)](Expiration.md)
+---
 ### Cache key settings<a name="cache-key-understand-cache-policy-settings"></a>
 
-Cache key settings specify the values in viewer requests that CloudFront includes in the cache key\. The values can include URL query strings, HTTP headers, and cookies\. The values that you include in the cache key are automatically included in requests that CloudFront sends to the origin, known as *origin requests*\. For information about controlling origin requests without affecting the cache key, see [Controlling origin requests](controlling-origin-requests.md)\.
+* specify
+  * values | viewer requests / CloudFront includes | cache key
+    * these values -- are automatically -- included | requests / CloudFront -- sends to the -- origin
+      * origin -- named as -- *origin requests* 
+* [Controlling origin requests / cache key NOT affected](controlling-origin-requests.md)
+* categories
+  * [Headers](#cache-policy-headers)
+  * [Cookies](#cache-policy-cookies)
+  * [Query strings](#cache-policy-query-strings)
+  * [Compression support](#cache-policy-compressed-objects)
 
-Cache key settings include:
-+ [Headers](#cache-policy-headers)
-+ [Cookies](#cache-policy-cookies)
-+ [Query strings](#cache-policy-query-strings)
-+ [Compression support](#cache-policy-compressed-objects)
+* **Headers**  
+  * == HTTP headers | viewer requests / 
+    * CloudFront includes | 
+      * cache key &
+      * origin requests
+  * available settings  
+    + **None**
+      + == HTTP headers | viewer requests are *NOT* included |
+        + cache key
+        + origin requests
+    + **Include the following headers**
+      + == specify which of the HTTP headers | viewer requests / are included
+        + [possible to include headers / -- generated by --  CloudFront | cache key ](adding-cloudfront-headers.md) 
+      + HTTP headers -- are specified by their -- name
+        + _Example:_ let's have the HTTP header  
 
-**Headers**  
-The HTTP headers in viewer requests that CloudFront includes in the cache key and in origin requests\. For headers, you can choose one of the following settings:  
-+ **None** – The HTTP headers in viewer requests are *not* included in the cache key and are *not* automatically included in origin requests\.
-+ **Include the following headers** – You specify which of the HTTP headers in viewer requests are included in the cache key and automatically included in origin requests\.
-When you use the **Include the following headers** setting, you specify HTTP headers by their name, not their value\. For example, consider the following HTTP header:  
+          ```
+          Accept-Language: en-US,en;q=0.5
+          ```
+          -> header -- is specified as -- `Accept-Language`
+        + BUT, CloudFront -- includes the -- full header == name + its value
 
-```
-Accept-Language: en-US,en;q=0.5
-```
-In this case, you specify the header as `Accept-Language`, not as `Accept-Language: en-US,en;q=0.5`\. However, CloudFront includes the full header, including its value, in the cache key and in origin requests\.  
-You can also include certain headers generated by CloudFront in the cache key\. For more information, see [Adding CloudFront request headers](adding-cloudfront-headers.md)\.
-
-**Cookies**  
+* **Cookies**  
+  * TODO:
 The cookies in viewer requests that CloudFront includes in the cache key and in origin requests\. For cookies, you can choose one of the following settings:  
 + **None** – The cookies in viewer requests are *not* included in the cache key and are *not* automatically included in origin requests\.
 + **All** – All cookies in viewer requests are included in the cache key and are automatically included in origin requests\.
@@ -222,7 +246,11 @@ Cookie: session_ID=abcd1234
 ```
 In this case, you specify the cookie as `session_ID`, not as `session_ID=abcd1234`\. However, CloudFront includes the full cookie, including its value, in the cache key and in origin requests\.
 
-**Query strings**  
+
+
+
+
+* **Query strings**  
 The URL query strings in viewer requests that CloudFront includes in the cache key and in origin requests\. For query strings, you can choose one of the following settings:  
 + **None** – The query strings in viewer requests are *not* included in the cache key and are *not* automatically included in origin requests\.
 + **All** – All query strings in viewer requests are included in the cache key and are also automatically included in origin requests\.
@@ -235,7 +263,11 @@ When you use the **Include specified query strings** or **Include all query stri
 ```
 In this case, you specify the query string as `split-pages`, not as `split-pages=false`\. However, CloudFront includes the full query string, including its value, in the cache key and in origin requests\.
 
-**Compression support**  
+
+
+
+
+* **Compression support**  
 These settings enable CloudFront to request and cache objects that are compressed in the Gzip or Brotli compression formats, when the viewer supports it\. These settings also allow [CloudFront compression](ServingCompressedFiles.md) to work\. Viewers indicate their support for these compression formats with the `Accept-Encoding` HTTP header\.  
 The Chrome and Firefox web browsers support Brotli compression only when the request is sent using HTTPS\. These browsers do not support Brotli with HTTP requests\.
 Enable these settings when any of the following are true:  
