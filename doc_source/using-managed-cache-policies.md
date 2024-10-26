@@ -1,6 +1,11 @@
 # Using the managed cache policies<a name="using-managed-cache-policies"></a>
 
-CloudFront provides a set of managed cache policies that you can attach to any of your distribution's cache behaviors\. With a managed cache policy, you don't need to write or maintain your own cache policy\. The managed policies use settings that are optimized for specific use cases\.
+* managed cache policies
+  * uses
+    * attach it | >=1 cache behaviors | CloudFront distribution
+  * allows
+    * NOT need to write OR maintain your own cache policy
+  * 's settings -- are optimized for -- specific use cases
 
 **Topics**
 + [Attaching a managed cache policy](#attaching-managed-cache-policies)
