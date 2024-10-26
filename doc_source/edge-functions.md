@@ -1,14 +1,53 @@
 # Customizing at the edge with functions<a name="edge-functions"></a>
 
-With Amazon CloudFront, you can write your own code to customize how your CloudFront distributions process HTTP requests and responses\. The code runs close to your viewers \(users\) to minimize latency, and you don’t have to manage servers or other infrastructure\. You can write code to manipulate the requests and responses that flow through CloudFront, perform basic authentication and authorization, generate HTTP responses at the edge, and more\.
-
-The code that you write and attach to your CloudFront distribution is called an *edge function*\. CloudFront provides two ways to write and manage edge functions:
-+ **CloudFront Functions** – With CloudFront Functions, you can write lightweight functions in JavaScript for high\-scale, latency\-sensitive CDN customizations\. The CloudFront Functions runtime environment offers submillisecond startup times, scales immediately to handle millions of requests per second, and is highly secure\. CloudFront Functions is a native feature of CloudFront, which means you can build, test, and deploy your code entirely within CloudFront\.
-+ **Lambda@Edge** – Lambda@Edge is an extension of [AWS Lambda](https://aws.amazon.com/lambda/) that offers powerful and flexible computing for complex functions and full application logic closer to your viewers, and is highly secure\. Lambda@Edge functions run in a Node\.js or Python runtime environment\. You publish them to a single AWS Region, but when you associate the function with a CloudFront distribution, Lambda@Edge automatically replicates your code around the world\.
+* *edge function*
+  * := code / you write & attach | your CloudFront distribution
+    * allows
+      * customizing how your CloudFront distributions
+        * process
+          * HTTP requests
+          * HTTP responses
+        * perform basic authentication & authorization
+        * generate HTTP responses | edge 
+    * runs -- close to your -- users
+      * Reason: 🧠 minimize latency 🧠
+    * managed by AWS
+      * == NO needed by you, to manage
+        * servers
+        * OTHER infrastructure 
+  * ways to write and manage edge functions
+    * **CloudFront Functions**
+      * allows
+        * writing lightweight functions | JavaScript -- for --
+          * high-scale
+          * latency-sensitive CDN customizations 
+      * 's runtime environment
+        * offers submillisecond startup times
+        * scales immediately -- to handle -- millions of requests / second
+        * is HIGHLY secure 
+      * == native feature of CloudFront
+        * == | CloudFront ONLY, you can
+          * build
+          * test
+          * deploy your code
+      * see [Customizing at the edge with CloudFront Functions](cloudfront-functions.md)
+    * **Lambda@Edge**
+      * == extension of [AWS Lambda](https://aws.amazon.com/lambda/) /
+        * powerful & flexible computing | complex functions
+        * full application logic / -- closer to your -- users
+        * highly secure
+      * Lambda@Edge functions run | runtime environment
+        * Node.js or
+        * Python 
+      * how to use it?
+        * publish them | 1! AWS Region
+        * when you associate the function -- with a -- CloudFront distribution -> Lambda@Edge -- automatically replicates -- your code | around the world
+      * see [Customizing at the edge with Lambda@Edge](lambda-at-the-edge.md)
 
 ## Choosing between CloudFront Functions and Lambda@Edge<a name="edge-functions-choosing"></a>
 
-CloudFront Functions and Lambda@Edge both provide a way to run code in response to CloudFront events\. However, there are important differences that distinguish them\. These differences can help you choose the one that’s right for your use case\. The following table lists some of the important differences between CloudFront Functions and Lambda@Edge\.
+* CloudFront Functions vs CloudFront Lambda@Edge
+  * BOTH, based on CloudFront events -> can run code
 
 
 |  | CloudFront Functions | Lambda@Edge | 
@@ -27,19 +66,27 @@ CloudFront Functions and Lambda@Edge both provide a way to run code in response 
 | Function logging and metrics | Yes | Yes | 
 | Pricing | Free tier available; charged per request | No free tier; charged per request and function duration | 
 
-**CloudFront Functions** is ideal for lightweight, short\-running functions for use cases like the following:
-+ **Cache key normalization** – You can transform HTTP request attributes \(headers, query strings, cookies, and even the URL path\) to create an optimal [cache key](understanding-the-cache-key.md), which can improve your cache hit ratio\.
-+ **Header manipulation** – You can insert, modify, or delete HTTP headers in the request or response\. For example, you can add a `True-Client-IP` header to every request\.
-+ **URL redirects or rewrites** – You can redirect viewers to other pages based on information in the request, or rewrite all requests from one path to another\.
-+ **Request authorization** – You can validate hashed authorization tokens, such as JSON web tokens \(JWT\), by inspecting authorization headers or other request metadata\.
+* **CloudFront Functions**'s use cases
+  * lightweight, short\-running functions
+    + **Cache key normalization**
+      + _Example:_ transform HTTP request attributes (headers, query strings, cookies, URL path\) -- to create an -- optimal [cache key](understanding-the-cache-key.md)
+    + **Header manipulation**
+      + _Example:_ insert, modify, or delete HTTP headers | request or response 
+        + _Example specific:_ add a `True-Client-IP` header / EVERY request
+    + **URL redirects or rewrites**
+      + _Example1:_ redirect viewers -- to -- other pages / -- based on -- information | request
+      + _Example2:_ rewrite ALL requests -- from -- one path -- to -- another
+    + **Request authorization**
+      + _Example:_ validate hashed authorization tokens (as JWT) -- via -- inspecting
+        + authorization headers
+        + OTHER request metadata
 
-To get started with CloudFront Functions, see [Customizing at the edge with CloudFront Functions](cloudfront-functions.md)\.
 
-**Lambda@Edge** is a good fit for the following scenarios:
-+ Functions that take several milliseconds or more to complete\.
-+ Functions that require adjustable CPU or memory\.
-+ Functions that depend on third\-party libraries \(including the AWS SDK, for integration with other AWS services\)\.
-+ Functions that require network access to use external services for processing\.
-+ Functions that require file system access or access to the body of HTTP requests\.
-
-To get started with Lambda@Edge, see [Customizing at the edge with Lambda@Edge](lambda-at-the-edge.md)\.
+* **Lambda@Edge**'s use cases
+  + functions /
+    + take several milliseconds to complete
+    + require
+      + adjustable CPU or memory
+      + network access -- to use -- external services for processing
+      + file system access or access -- to the -- body of HTTP requests
+    + -- depend on -- TP libraries ( _Example:_ AWS SDK -- for integration with -- OTHER AWS services\)
