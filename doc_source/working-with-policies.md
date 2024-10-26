@@ -10,6 +10,8 @@
           * query strings
         * TTL settings -- for -- objects | CloudFront cache
       * enabling CloudFront -- to -- request & cache compressed objects
+    * uses
+      * improve your *cache hit ratio*
     * ways to create it
       * CloudFront console
       * AWS CLI
