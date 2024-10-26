@@ -126,7 +126,7 @@
 + [Video on demand and live streaming video with CloudFront](on-demand-streaming-video.md)
    + [Delivering video on demand (VOD) with CloudFront](on-demand-video.md)
    + [Delivering live streaming video with CloudFront and AWS Media Services](live-streaming.md)
-+ [Customizing at the edge with functions](edge-functions.md)
++ [Customize the edge -- via -- functions](edge-functions.md)
    + [Customizing at the edge with CloudFront Functions](cloudfront-functions.md)
       + [Tutorial: Creating a simple function with CloudFront Functions](functions-tutorial.md)
       + [Writing function code (CloudFront Functions programming model)](writing-function-code.md)
